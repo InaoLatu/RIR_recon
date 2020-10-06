@@ -12,6 +12,15 @@ apt install postgresql python3 python-pip
 pip install -r requirements.txt
 ```
 
+Create PostgreSQL user and database for the user of your machine (user@machine): 
+```
+sudo su postgres
+psql 
+CREATE USER user WITH PASSWORD 'root';  (Subsitute 'user' with the name of your user in your machine)
+ALTER USER user WITH SUPERUSER; 
+CREATE DATABASE user; 
+```
+
 Create PostgreSQL database (Use "ripe" as password):
 ```sh
 sudo -u postgres createuser --pwprompt --createdb ripe
@@ -25,7 +34,7 @@ wget ftp://ftp.afrinic.net/pub/dbase/afrinic.db.gz
 wget ftp://ftp.apnic.net/pub/apnic/whois/apnic.db.inetnum.gz
 wget ftp://ftp.apnic.net/pub/apnic/whois/apnic.db.inet6num.gz
 
-wget ftp://ftp.arin.net/pub/rr/arin.db
+wget ftp://ftp.arin.net/pub/rr/arin.db.gz 
 
 wget ftp://ftp.lacnic.net/pub/stats/lacnic/delegated-lacnic-extended-latest
 
@@ -37,14 +46,17 @@ wget ftp://ftp.ripe.net/ripe/dbase/split/ripe.db.inet6num.gz
 ./download_dumps.sh
 ```
 
-After importing you can lookup an IP address like:
+After that, we import the data from the .gz files downloaded in the previous step:
+`./create_ripe.py`
+
+Now you can search by keyword (using the query_ripe_db.sh) or directly using Postgresql sintax:
 
 ```sql
 SELECT block.inetnum, block.country, block.description FROM block WHERE block.inetnum >> '2001:db8::1' ORDER BY block.inetnum DESC LIMIT 1;
 
 - or simply -
 
-./query_ripe_db.sh 192.0.2.1
+./query_ripe_db.sh idc 
 ```
 
 TO-DO:

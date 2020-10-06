@@ -13,7 +13,16 @@ from db.helper import setup_connection
 from netaddr import iprange_to_cidrs
 import math
 
-FILELIST = ['afrinic.db.gz', 'apnic.db.inet6num.gz', 'apnic.db.inetnum.gz', 'arin.db', 'delegated-lacnic-extended-latest', 'ripe.db.inetnum.gz', 'ripe.db.inet6num.gz']
+#['afrinic.db.gz']
+# ['apnic.db.inet6num.gz', 'apnic.db.inetnum.gz']
+#[ 'arin.db.gz']
+# 'delegated-lacnic-extended-latest'] 
+# ['ripe.db.inetnum.gz']
+# ['ripe.db.inet6num.gz']
+FILELIST = ['ripe.db.inetnum.gz']
+#
+
+
 NUM_WORKERS = cpu_count()
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(processName)s - %(message)s'
 COMMIT_COUNT = 10000
