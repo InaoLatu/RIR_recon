@@ -13,16 +13,7 @@ from db.helper import setup_connection
 from netaddr import iprange_to_cidrs
 import math
 
-#['afrinic.db.gz']
-# ['apnic.db.inet6num.gz', 'apnic.db.inetnum.gz']
-#[ 'arin.db.gz']
-# 'delegated-lacnic-extended-latest'] 
-# ['ripe.db.inetnum.gz']
-# ['ripe.db.inet6num.gz']
-FILELIST = ['ripe.db.inetnum.gz']
-#
-
-
+FILELIST = ['afrinic.db.gz', 'apnic.db.inet6num.gz', 'apnic.db.inetnum.gz', 'delegated-lacnic-extended-latest', 'arin.db.gz','ripe.db.inetnum.gz', 'ripe.db.inet6num.gz'] 
 NUM_WORKERS = cpu_count()
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(processName)s - %(message)s'
 COMMIT_COUNT = 10000
@@ -119,7 +110,7 @@ def read_blocks(filename: str) -> list:
     return blocks
 
 
-def parse_blocks(jobs: Queue):
+def parse_blocks(jobs: Queue, filename: str):
     session = setup_connection()
 
     counter = 0
@@ -138,9 +129,15 @@ def parse_blocks(jobs: Queue):
         maintained_by = parse_property(block, 'mnt-by')
         created = parse_property(block, 'created')
         last_modified = parse_property(block, 'last-modified')
+        source = ""
+        if filename == 'delegated-lacnic-extended-latest': 
+        	source = 'lacnic'
+        else: 
+        	source = filename.split('.')[0] #it takes the name of the db from the file name (ripe, apnic...)
+
 
         b = Block(inetnum=inetnum, netname=netname, description=description, country=country,
-                  maintained_by=maintained_by, created=created, last_modified=last_modified)
+                  maintained_by=maintained_by, created=created, last_modified=last_modified, source=source)
 
         session.add(b)
         counter += 1
@@ -179,7 +176,7 @@ def main():
             # start workers
             logger.debug('starting {} processes'.format(NUM_WORKERS))
             for w in range(NUM_WORKERS):
-                p = Process(target=parse_blocks, args=(jobs,))
+                p = Process(target=parse_blocks, args=(jobs, FILENAME))
                 p.start()
                 workers.append(p)
 

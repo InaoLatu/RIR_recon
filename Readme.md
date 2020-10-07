@@ -4,11 +4,11 @@ This script parses the ARIN/APNIC/LACNIC/AfriNIC/RIPE databases into a local Pos
 
 Installation of needed packages (Example on Ubuntu 16.04):
 ```sh
-apt install postgresql python3 python3-netaddr python3-psycopg2 python3-sqlalchemy
+sudo apt install postgresql python3 python3-netaddr python3-psycopg2 python3-sqlalchemy
 
 - or -
 
-apt install postgresql python3 python-pip
+sudo apt install postgresql python3 python-pip
 pip install -r requirements.txt
 ```
 
